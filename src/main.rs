@@ -2,7 +2,7 @@
 use rocket::http::{ContentType,Status};
 use rocket::{fs::TempFile};
 use rocket_dyn_templates::Template;
-use rocket::form::{Form, Contextual};
+use rocket::form::{Form, Contextual, Context};
 
 #[derive(Debug, FromForm)]
 struct Password<'a>{
@@ -25,9 +25,10 @@ struct User<'a>{
     profile_picture: TempFile<'a>,
 }
 
+
 #[get("/")]
-fn hello() -> &'static str{
-  "Hello, World"
+fn home() -> Template{
+  Template::render("home", &Context::default())
 }
 
 #[post("/addUser", data = "<form>")]
@@ -42,5 +43,5 @@ fn add_user<'a>(form: Form<Contextual<'a, User>>) -> (Status, Template) {
 
 #[launch]
 fn rocket() -> _{
-    rocket::build().mount("/", routes![hello])
+    rocket::build().mount("/", routes![home])
 }
